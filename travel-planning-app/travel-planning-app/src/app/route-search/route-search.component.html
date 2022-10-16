@@ -1,0 +1,85 @@
+<div class="wrapper">
+<div class="background">
+    <div class="overlay">
+    <!-- <div class='wave -one'></div>
+    <div class='wave -two'></div>
+    <div class='wave -three'></div> -->
+
+<div class="container-fluid">
+    <div class="jumbotron">
+    <h2 class="display-4 small" >Enter the Details of your trip</h2>
+    </div>
+    <br>
+    <form class="form-group" #routeSearchForm="ngForm" (submit)="findTrips(routeSearchForm.value)">
+        <div class="row">
+            <div class="col-md-2">
+                <label for="vehicleType">Vehicle Type</label>
+
+            </div>
+            <div class="col-md-6">
+                <select name="vehicleType" id="vehicleType" #vehicleTypeT="ngModel" ngModel required class="form-control">
+                    <option value="Car">Car</option>
+                    <option value="Bike">Bike</option>
+                </select>
+                
+    
+            </div>
+            
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-2">
+                <label for="fromLocation">From</label>
+
+            </div>
+            <div class="col-md-6">
+                <input type="text" name="fromLocation" id="fromLocation" placeholder="e.g. Ladakh"
+                    #fromLocationT="ngModel" ngModel required class="form-control">
+
+            </div>
+
+            <div class="col-md-4" *ngIf="(fromLocationT.touched)">
+                <small class="alert alert-danger" *ngIf="fromLocationT.errors?.['required']">This is Required !!</small>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2">
+                <label for="toLocation">To</label>
+
+            </div>
+            <div class="col-md-6">
+                <input type="text" name="toLocation" id="toLocation" placeholder="e.g. Ladakh"
+                    #toLocationT="ngModel" ngModel required class="form-control">
+
+            </div>
+
+            <div class="col-md-4" *ngIf="(toLocationT.touched)">
+                <small class="alert alert-danger" *ngIf="toLocationT.errors?.['required']">This is Required !!</small>
+
+            </div>
+        </div>
+        <br>
+
+       
+
+
+        <div>
+            <button type="submit" [disabled]="routeSearchForm.invalid" routerLink="/results" class="button">
+                <span name="text">Plan Trip </span>
+                <span name="image" width="15px" height="15px"><img src='assets/distance.png' ></span>
+            </button>
+            <button type="primary" routerLink="/loading" class="button">
+                <span>loading</span>
+            </button>
+            
+        </div>
+    </form>
+
+
+</div>
+</div>
+</div>
+</div>
