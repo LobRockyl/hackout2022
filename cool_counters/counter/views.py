@@ -41,28 +41,59 @@ def makeMap(request):
 
         
         #create api_object
-        api_object = {
+#         api_object = {
+#     "locations": [
+#       {
+#         "id": "from",
+#         "coords": {
+#           "lat": frmlatlongarr[0],
+#           "lng": frmlatlongarr[1]
+#         }
+#       },
+#       {
+#         "id": "to",
+#         "coords": {
+#           "lat": tolatlongarr[0],
+#           "lng": tolatlongarr[1]
+#         }
+#       }
+#     ],
+#     "arrival_searches": [
+#       {
+#         "id": "Trip Plan",
+#         "arrival_location_id": "to",
+#         "departure_location_ids": ["from"],
+#         "arrival_time": "2021-09-28T09:00:00Z",
+#         "properties": ["route"],
+#         "transportation": {
+#           "type": "driving"
+#         }
+#       }
+#     ]
+#   }
+
+        api_object={
     "locations": [
       {
-        "id": "from",
+        "id": "Home",
         "coords": {
-          "lat": frmlatlongarr[0],
-          "lng": frmlatlongarr[1]
+          "lat": 51.5815890,
+          "lng": -0.235871
         }
       },
       {
-        "id": "to",
+        "id": "Office",
         "coords": {
-          "lat": tolatlongarr[0],
-          "lng": tolatlongarr[1]
+          "lat": 51.511933,
+          "lng": -0.1277888
         }
       }
     ],
     "arrival_searches": [
       {
-        "id": "Trip Plan",
-        "arrival_location_id": "to",
-        "departure_location_ids": ["from"],
+        "id": "Morning Commute",
+        "arrival_location_id": "Office",
+        "departure_location_ids": ["Home"],
         "arrival_time": "2021-09-28T09:00:00Z",
         "properties": ["route"],
         "transportation": {
@@ -71,19 +102,20 @@ def makeMap(request):
       }
     ]
   }
+
         print("----------------------------------------------",api_object)
         headers={"X-Application-Id": "14e7615d", "X-Api-Key":"ff3fa17dc4ac511b62a1f5019c8dd66d"}
 
         resp = requests.post('https://api.traveltimeapp.com/v4/routes', headers=headers, json=api_object, timeout=10).json()
         
-        print((resp))
-
+        print("------------------------Resp----------------------",resp)
+        
         a = resp["results"][0]["locations"][0]["properties"][0]["route"]["parts"]
         c = []                              
         for i in a:
             for j in i["coords"]:
-                c.append(j["lat"],j["lng"])
-        print(c)          #plot
+                c.append((float(j["lat"]),float(j["lng"])))
+        print("---------------------Final Map Coords-------------------------",c)          #plot
         
         map = folium.Map((c[0][1],c[0][0]), zoom_start=13)
         for pt in c:
