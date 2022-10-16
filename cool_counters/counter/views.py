@@ -34,10 +34,10 @@ def makeMap(request):
 
         frm_gc = ttpy.geocoding(frm)
         to_gc = ttpy.geocoding(to)
-        print(frm_gc)
+        # print(frm_gc)
         frmlatlongarr = frm_gc["features"][0]["geometry"]["coordinates"]
         tolatlongarr = to_gc["features"][0]["geometry"]["coordinates"]
-        print(frmlatlongarr)
+        # print(frmlatlongarr)
 
         
         #create api_object
@@ -103,23 +103,37 @@ def makeMap(request):
     ]
   }
 
-        print("----------------------------------------------",api_object)
+        # print("----------------------------------------------",api_object)
         headers={"X-Application-Id": "14e7615d", "X-Api-Key":"ff3fa17dc4ac511b62a1f5019c8dd66d"}
 
         resp = requests.post('https://api.traveltimeapp.com/v4/routes', headers=headers, json=api_object, timeout=10).json()
         
-        print("------------------------Resp----------------------",resp)
+        # print("------------------------Resp----------------------",resp)
         
         a = resp["results"][0]["locations"][0]["properties"][0]["route"]["parts"]
         c = []                              
+        ct = 0
         for i in a:
             for j in i["coords"]:
                 c.append((float(j["lat"]),float(j["lng"])))
-        print("---------------------Final Map Coords-------------------------",c)          #plot
+
+        p = []
+        for k in c:
+            ct += 1
+            if(ct>100):
+                petrolpumps = requests.get('https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.geojson?api_key=0CThobryleULJT5qooysq1LJpvOEgIMNTPLgvrV1&latitude=39.743078&longitude=-105.152278', timeout=10).json()
+                ct=0
+                if(len(petrolpumps["features"]) != 0):
+                    for x in petrolpumps["features"]["geometry"]["coordinates"]:
+                        p.append((float(x[0]),float(x[1])))
+
+        print("---------------------Petrol Pump Map Coords-------------------------",p)
         
-        map = folium.Map((c[0][1],c[0][0]), zoom_start=13)
+        # print("---------------------Final Map Coords-------------------------",c, len(c))          #plot
+        
+        map = folium.Map((c[0][0],c[0][1]), zoom_start=13)
         for pt in c:
-            marker = folium.Marker([pt[1], pt[0]]) #latitude,longitude
+            marker = folium.Marker([pt[0], pt[1]]) #latitude,longitude
             map.add_child(marker)
         map.save("map2.html")
 
