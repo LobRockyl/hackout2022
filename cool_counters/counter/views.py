@@ -71,8 +71,12 @@ def makeMap(request):
       }
     ]
   }
+    
+        headers={"X-Application-Id": "14e7615d", "X-Api-Key":"ff3fa17dc4ac511b62a1f5019c8dd66d"}
 
-        resp = requests.post('https://api.traveltimeapp.com/v4/routes', data=api_object, timeout=10)
+        resp = requests.post('https://api.traveltimeapp.com/v4/routes', headers=headers, data=api_object, timeout=10).json()
+        
+        print(json.loads(resp))
 
         a = resp["results"][0]["locations"][0]["properties"][0]["route"]["parts"]
         c = []                              
