@@ -1,22 +1,6 @@
-# Simple Django App
-This is a simple, minimal Django app intended to help understand the main aspects of working with Django.
+# Travel planning app
+This is an easy to use travel planning and route selection app.
 
-## Usage Instructions
-Clone this repository e.g.
-
-```
-git clone git@github.com:deparkes/simple-django-app.git
-```
-
-Navigate to the 'cool_counters' Django project:
-
-```
-cd simple-django-app/cool_counters
-```
-
-Run migrations to update/create database
-```
-python manage.py migrate
 ```
 
 Run the Django development server
