@@ -123,9 +123,13 @@ def makeMap(request):
             if(ct>100):
                 petrolpumps = requests.get('https://developer.nrel.gov/api/alt-fuel-stations/v1/nearest.geojson?api_key=0CThobryleULJT5qooysq1LJpvOEgIMNTPLgvrV1&latitude=39.743078&longitude=-105.152278', timeout=10).json()
                 ct=0
+                print("if me jaara bas")
                 if(len(petrolpumps["features"]) != 0):
-                    for x in petrolpumps["features"]["geometry"]["coordinates"]:
-                        p.append((float(x[0]),float(x[1])))
+                    print("if me hai bas")
+                    print(len(petrolpumps["features"]))
+                    for x in petrolpumps["features"]:
+                        tx = x["geometry"]["coordinates"]
+                        p.append((float(tx[0]),float(tx[1])))
 
         print("---------------------Petrol Pump Map Coords-------------------------",p)
         
@@ -134,6 +138,9 @@ def makeMap(request):
         map = folium.Map((c[0][0],c[0][1]), zoom_start=13)
         for pt in c:
             marker = folium.Marker([pt[0], pt[1]]) #latitude,longitude
+            map.add_child(marker)
+        for pt in p:
+            marker = folium.Marker([pt[1], pt[0]]) #latitude,longitude
             map.add_child(marker)
         map.save("map2.html")
 
