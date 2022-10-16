@@ -72,50 +72,82 @@ def makeMap(request):
 #     ]
 #   }
 
-        api_object={
-    "locations": [
-      {
-        "id": "Home",
+#       
+
+        api_object = {"locations": [
+        {
+        "id": "Morrison",
         "coords": {
-          "lat": 51.5815890,
-          "lng": -0.235871
+            "lat": 39.6535988,
+            "lng": -105.1910996
         }
-      },
-      {
-        "id": "Office",
+        },
+        {
+        "id": "Lakewood",
         "coords": {
-          "lat": 51.511933,
-          "lng": -0.1277888
+            "lat": 39.7583911,
+            "lng": -105.0880886
         }
-      }
+        },
+        {
+        "id": "Wheat Ridge",
+        "coords": {
+            "lat": 39.766098,    
+            "lng": -105.0772063
+        }
+        }
     ],
-    "arrival_searches": [
-      {
-        "id": "Morning Commute",
-        "arrival_location_id": "Office",
-        "departure_location_ids": ["Home"],
-        "arrival_time": "2021-09-28T09:00:00Z",
-        "properties": ["route"],
+    "departure_searches": [
+        {
+        "id": "departure search example",
+        "departure_location_id": "Morrison",
+        "arrival_location_ids": [
+            "Lakewood",
+            "Wheat Ridge"
+        ],
+        "departure_time": "2022-10-13T14:00:00Z",
+        "properties": ["travel_time", "distance", "route"],
         "transportation": {
-          "type": "driving"
+            "type": "driving"
         }
-      }
+        }
     ]
-  }
+    }
 
         # print("----------------------------------------------",api_object)
         headers={"X-Application-Id": "14e7615d", "X-Api-Key":"ff3fa17dc4ac511b62a1f5019c8dd66d"}
 
         resp = requests.post('https://api.traveltimeapp.com/v4/routes', headers=headers, json=api_object, timeout=10).json()
         
-        # print("------------------------Resp----------------------",resp)
+        print("------------------------Resp----------------------",resp)
         
         a = resp["results"][0]["locations"][0]["properties"][0]["route"]["parts"]
-        c = []                              
+        b = resp["results"][0]["locations"][1]["properties"][0]["route"]["parts"]
+        locations = resp["results"][0]["locations"]
+        # paths = resp["results"][0]["locations"][0]["properties"]
+        # route = resp["results"][0]["locations"][0]["properties"][0]["route"]["parts"]
+        c = []  
+        d = []                            
         ct = 0
+        # for location in locations:
+        #     for path in location["properties"]:
+        #         for route in path["route"]["parts"]:
+        #             for j in route["coords"]:
+        #                 c.append((float(j["lat"]),float(j["lng"])))
+
+        # for location in locations[1]:
+        #     for path in location["properties"]:
+        #         for route in path["route"]["parts"]:
+        #             for j in route["coords"]:
+        #                 d.append((float(j["lat"]),float(j["lng"])))
+
         for i in a:
             for j in i["coords"]:
                 c.append((float(j["lat"]),float(j["lng"])))
+
+        for i in b:
+            for j in i["coords"]:
+                d.append((float(j["lat"]),float(j["lng"])))
 
         p = []
         for k in c:
@@ -133,14 +165,17 @@ def makeMap(request):
 
         print("---------------------Petrol Pump Map Coords-------------------------",p)
         
-        # print("---------------------Final Map Coords-------------------------",c, len(c))          #plot
+        print("---------------------Final Map Coords-------------------------",c, len(c))          #plot
         
         map = folium.Map((c[0][0],c[0][1]), zoom_start=13)
         for pt in c:
             marker = folium.Marker([pt[0], pt[1]]) #latitude,longitude
             map.add_child(marker)
+        for pt in d:
+            marker = folium.Marker([pt[0], pt[1]], icon=folium.Icon(color='red',icon_color='#FF0000')) #latitude,longitude
+            map.add_child(marker)
         for pt in p:
-            marker = folium.Marker([pt[1], pt[0]]) #latitude,longitude
+            marker = folium.Marker([pt[1], pt[0]], icon=folium.Icon(color='yellow',icon_color='#FFF000')) #latitude,longitude
             map.add_child(marker)
         map.save("map2.html")
 
@@ -151,4 +186,3 @@ def makeMap(request):
         result['exist'] = "NO"
         result['error_reason'] = str(e)
     return JsonResponse(result)
-
