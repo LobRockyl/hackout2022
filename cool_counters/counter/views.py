@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
 from pkg_resources import to_filename
 import requests
 import folium
@@ -36,9 +37,40 @@ def makeMap(request):
         print(frm_gc)
         frmlatlongarr = frm_gc["features"][0]["geometry"]["coordinates"]
         tolatlongarr = to_gc["features"][0]["geometry"]["coordinates"]
+        print(frmlatlongarr)
 
         
-        #create api_object 
+        #create api_object
+        api_object = {
+    "locations": [
+      {
+        "id": "from",
+        "coords": {
+          "lat": frmlatlongarr[0],
+          "lng": frmlatlongarr[1]
+        }
+      },
+      {
+        "id": "to",
+        "coords": {
+          "lat": tolatlongarr[0],
+          "lng": tolatlongarr[1]
+        }
+      }
+    ],
+    "arrival_searches": [
+      {
+        "id": "Trip Plan",
+        "arrival_location_id": "to",
+        "departure_location_ids": ["from"],
+        "arrival_time": "2021-09-28T09:00:00Z",
+        "properties": ["route"],
+        "transportation": {
+          "type": "driving"
+        }
+      }
+    ]
+  }
 
         resp = requests.post('https://api.traveltimeapp.com/v4/routes', data=api_object, timeout=10)
 
